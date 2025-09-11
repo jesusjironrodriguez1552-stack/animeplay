@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack on Titan - AnimeStream</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff6600 0%, #ff4500 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.3);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .anime-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 69, 0, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 102, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 102, 0, 0.2);
+        }
+
+        .anime-poster {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .anime-poster img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #ff6600;
+        }
+
+        .anime-info h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6600, #ff4500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .anime-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #ff6600 0%, #ff4500 100%);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .synopsis {
+            background: rgba(255, 102, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #ff6600;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+
+        .episodes-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ff6600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .episode-card {
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.15) 0%, rgba(255, 69, 0, 0.15) 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 102, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .episode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.4);
+            border-color: #ff6600;
+        }
+
+        .episode-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(45deg, #333, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .episode-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 102, 0, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .episode-card:hover .play-button {
+            opacity: 1;
+        }
+
+        .play-button:hover {
+            background: #ff4500;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .episode-info {
+            padding: 1.5rem;
+        }
+
+        .episode-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #ff6600;
+        }
+
+        .episode-number {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .episode-duration {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .anime-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .anime-info h1 {
+                font-size: 2rem;
+            }
+            
+            .episodes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6600 0%, #ff4500 100%);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">AnimeStream</div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="anime-header">
+            <div class="anime-poster">
+                <!-- CAMBIAR ESTA URL POR LA IMAGEN DEL ANIME -->
+                <img src="https://m.media-amazon.com/images/M/MV5BNzc5MTczNDQtNDFjNi00ZDU0LWFkMzYtMzkzYWY0NWVhZTNhXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg" alt="Attack on Titan">
+            </div>
+            <div class="anime-info">
+                <h1>Attack on Titan</h1>
+                <div class="anime-stats">
+                    <div class="stat-item">Temporada 1</div>
+                    <div class="stat-item">25 Episodios</div>
+                    <div class="stat-item">Acción</div>
+                    <div class="stat-item">Drama</div>
+                </div>
+                <div class="synopsis">
+                    <strong>Sinopsis:</strong> La humanidad vive encerrada en ciudades rodeadas de enormes muros debido a los Titanes, gigantescas criaturas humanoides que devoran humanos aparentemente sin razón. La historia se centra en Eren Yeager, su hermana adoptiva Mikasa Ackerman y su amigo de la infancia Armin Arlert, quienes se unen al ejército para luchar contra los Titanes después de que su ciudad natal sea invadida.
+                </div>
+            </div>
+        </div>
+
+        <div class="episodes-section">
+            <h2 class="section-title">Episodios</h2>
+            <div class="episodes-grid">
+                
+                <!-- EPISODIO 1 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio1')">
+                    <div class="episode-thumbnail">
+                        <!-- CAMBIAR URL DE LA IMAGEN DEL EPISODIO -->
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+1" alt="Episodio 1">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Para Ti, Dentro de 2000 Años</div>
+                        <div class="episode-number">Episodio 1</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 2 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio2')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+2" alt="Episodio 2">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Ese Día</div>
+                        <div class="episode-number">Episodio 2</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 3 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio3')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+3" alt="Episodio 3">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Una Tenue Luz en la Desesperación</div>
+                        <div class="episode-number">Episodio 3</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 4 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio4')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+4" alt="Episodio 4">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">La Noche del Banquete de Clausura</div>
+                        <div class="episode-number">Episodio 4</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 5 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio5')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+5" alt="Episodio 5">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Primer Combate</div>
+                        <div class="episode-number">Episodio 5</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 6 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio6')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+6" alt="Episodio 6">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">El Mundo que la Chica Vio</div>
+                        <div class="episode-number">Episodio 6</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 7 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio7')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+7" alt="Episodio 7">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Pequeña Hoja</div>
+                        <div class="episode-number">Episodio 7</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- EPISODIO 8 -->
+                <div class="episode-card" onclick="playEpisode('https://ejemplo.com/episodio8')">
+                    <div class="episode-thumbnail">
+                        <img src="https://via.placeholder.com/300x180/ff4500/ffffff?text=Episodio+8" alt="Episodio 8">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="episode-info">
+                        <div class="episode-title">Escucho el Latido de su Corazón</div>
+                        <div class="episode-number">Episodio 8</div>
+                        <div class="episode-duration">24 min</div>
+                    </div>
+                </div>
+
+                <!-- AGREGA MÁS EPISODIOS AQUÍ SIGUIENDO LA MISMA ESTRUCTURA -->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        function playEpisode(url) {
+            // Aquí puedes cambiar lo que sucede cuando se hace clic en un episodio
+            // Por ahora solo muestra una notificación y abre la URL
+            showNotification('Reproduciendo episodio...');
+            
+            // Abrir la URL en una nueva pestaña
+            window.open(url, '_blank');
+            
+            // O si quieres que se abra en la misma pestaña:
+            // window.location.href = url;
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
