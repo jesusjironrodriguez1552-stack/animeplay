@@ -240,6 +240,60 @@
             margin-bottom: 40px;
         }
         
+        /* Estilos para navegación */
+        .navigation {
+            text-align: center;
+            margin: 50px 0 30px 0;
+        }
+        
+        .nav-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            border: 2px solid transparent;
+        }
+        
+        .nav-button:hover {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-button:active {
+            transform: translateY(0);
+        }
+        
+        .nav-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* Indicador de página */
+        .page-indicator {
+            text-align: center;
+            margin: 30px 0;
+            color: #ccc;
+            font-size: 16px;
+        }
+        
+        .current-page {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
         @media (max-width: 768px) {
             body {
                 padding: 15px;
@@ -288,6 +342,15 @@
                 background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
                 border: 2px solid #555;
             }
+            
+            .nav-button {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+            
+            .navigation {
+                margin: 40px 0 25px 0;
+            }
         }
         
         @media (max-width: 480px) {
@@ -328,6 +391,15 @@
             h1 {
                 font-size: 22px;
             }
+            
+            .nav-button {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+            
+            .page-indicator {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -336,6 +408,11 @@
         <!-- Banner superior principal -->
         <div class="top-banner">
             🎬 PELÍCULAS GRATIS EN HD - PUBLICIDAD 🎬
+        </div>
+
+        <!-- Indicador de página actual -->
+        <div class="page-indicator">
+            Estás viendo: <span class="current-page">Página 1</span>
         </div>
 
         <!-- Primer banner publicitario -->
@@ -641,6 +718,13 @@
                     </a>
                 </div>
             </div>
+        </div>
+        
+        <!-- Navegación a la siguiente página -->
+        <div class="navigation">
+            <a href="pagina2.html" class="nav-button">
+                <span class="nav-icon">🎬</span>Ver más películas
+            </a>
         </div>
         
         <!-- Banner inferior grande -->
