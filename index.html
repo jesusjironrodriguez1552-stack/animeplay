@@ -3,798 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Películas</title>
+    <title>🌹 Atrapa las Rosas </title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        
+
         body {
-            background-color: #1a1a1a;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #fff;
-            font-size: 32px;
-        }
-        
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
-        
-        .movie-item {
-            background-color: #2d2d2d;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #444;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .movie-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .movie-image-container {
-            width: 100%;
-            height: 300px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+            height: 100vh;
             overflow: hidden;
             position: relative;
-            background-color: #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            touch-action: manipulation;
         }
-        
-        .movie-image {
+
+        .game-container {
+            position: relative;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            height: 100vh;
+            overflow: hidden;
         }
-        
-        .movie-image:hover {
-            opacity: 0.8;
-            transform: scale(1.05);
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .image-placeholder {
+
+        .title {
+            font-size: 1.5em;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .counter {
+            font-size: 1.2em;
+            color: #e17055;
+            font-weight: bold;
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            color: #636e72;
+            z-index: 100;
+        }
+
+        .rose {
             position: absolute;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.1s ease;
+            animation: fall linear;
+        }
+
+        .rose:active {
+            transform: scale(1.2);
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-80px) rotate(0deg);
+            }
+            to {
+                transform: translateY(calc(100vh + 80px)) rotate(360deg);
+            }
+        }
+
+        .rose-emoji {
+            font-size: 60px;
+            display: block;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .collected-effect {
+            position: absolute;
+            pointer-events: none;
+            font-size: 80px;
+            color: #fdcb6e;
+            animation: collect 1s ease-out forwards;
+            z-index: 50;
+        }
+
+        @keyframes collect {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(360deg) translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* Carta */
+        .letter-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #444, #666);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: #ccc;
-            font-size: 24px;
-        }
-        
-        .image-placeholder.hidden {
+            background: rgba(0,0,0,0.8);
             display: none;
-        }
-        
-        .movie-title {
-            color: #fff;
-            font-size: 20px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .movie-synopsis {
-            background-color: #333;
-            padding: 15px;
-            border-radius: 8px;
-            line-height: 1.5;
-            text-align: justify;
-            font-size: 14px;
-            margin-bottom: 20px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        
-        .movie-info {
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-in;
         }
-        
-        .movie-year {
-            background-color: #444;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #ccc;
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        
-        .movie-genre {
-            background-color: #555;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #fff;
+
+        .letter {
+            background: linear-gradient(45deg, #fff, #f8f9fa);
+            width: 90%;
+            max-width: 400px;
+            height: 70%;
+            max-height: 600px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            transform: scale(0.8) rotateY(180deg);
+            animation: openLetter 1s ease-out 0.5s forwards;
+            transform-style: preserve-3d;
         }
-        
-        .watch-button {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+
+        @keyframes openLetter {
+            to {
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        .letter-content {
+            padding: 40px 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             text-align: center;
+            opacity: 0;
+            animation: showContent 0.8s ease-out 1.5s forwards;
+        }
+
+        @keyframes showContent {
+            to { opacity: 1; }
+        }
+
+        .letter-title {
+            font-size: 1.8em;
+            color: #e17055;
+            margin-bottom: 30px;
             font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
         }
-        
-        .watch-button:hover {
-            background: linear-gradient(135deg, #ee5a24, #ff6b6b);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(238, 90, 36, 0.4);
+
+        .letter-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-style: italic;
         }
-        
-        .play-icon {
-            margin-right: 8px;
-            font-size: 18px;
+
+        .letter-signature {
+            font-size: 1.3em;
+            color: #e17055;
+            font-weight: bold;
+            margin-top: 20px;
         }
-        
-        .loading-spinner {
+
+        .letter-decoration {
             position: absolute;
-            top: 50%;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .play-again-btn {
+            position: absolute;
+            bottom: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: showButton 0.5s ease-out 2.5s forwards;
+        }
+
+        @keyframes showButton {
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .play-again-btn:active {
+            transform: translateX(-50%) translateY(2px);
+        }
+
+        /* Nubes de fondo */
+        .cloud {
+            position: absolute;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50px;
+            opacity: 0.7;
+            animation: float-cloud 20s linear infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50px;
+        }
+
+        .cloud1 {
+            width: 80px;
+            height: 40px;
+            top: 20%;
+            left: -100px;
+        }
+
+        .cloud1::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud1::after {
             width: 40px;
             height: 40px;
-            border: 4px solid #666;
-            border-top: 4px solid #ff6b6b;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            top: -15px;
+            right: 10px;
         }
 
-        /* Estilos para publicidad */
-        .ad-container {
-            margin: 25px 0;
-            text-align: center;
-            padding: 20px;
-            background-color: #2d2d2d;
-            border-radius: 10px;
-            border: 1px solid #444;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .cloud2 {
+            width: 60px;
+            height: 30px;
+            top: 60%;
+            left: -80px;
+            animation-delay: -10s;
         }
 
-        .ad-label {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .cloud2::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 8px;
         }
 
-        .ad-top {
-            margin: 20px 0 30px 0;
+        .cloud2::after {
+            width: 30px;
+            height: 30px;
+            top: -10px;
+            right: 8px;
         }
 
-        .ad-middle {
-            margin: 35px 0;
-        }
-
-        .ad-between {
-            margin: 30px 0;
-        }
-
-        .ad-bottom {
-            margin: 30px 0 20px 0;
-        }
-
-        /* Banner superior */
-        .top-banner {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: #fff;
-            text-align: center;
-            padding: 18px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Grid para películas con separadores publicitarios */
-        .content-section {
-            margin-bottom: 40px;
-        }
-        
-        /* Estilos para navegación */
-        .navigation {
-            text-align: center;
-            margin: 50px 0 30px 0;
-        }
-        
-        .nav-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            color: white;
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
-            border: 2px solid transparent;
-        }
-        
-        .nav-button:hover {
-            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        .nav-button:active {
-            transform: translateY(0);
-        }
-        
-        .nav-icon {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-        
-        /* Indicador de página */
-        .page-indicator {
-            text-align: center;
-            margin: 30px 0;
-            color: #ccc;
-            font-size: 16px;
-        }
-        
-        .current-page {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0 10px;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
+        @keyframes float-cloud {
+            from {
+                transform: translateX(0);
             }
-            
-            .movies-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
+            to {
+                transform: translateX(calc(100vw + 100px));
             }
-            
-            .movie-image-container {
-                height: 280px;
-            }
-            
-            .movie-item {
-                padding: 18px;
-            }
-            
-            h1 {
-                font-size: 26px;
-                margin-bottom: 25px;
-            }
-            
-            .movie-info {
-                justify-content: center;
-            }
+        }
 
-            .ad-container {
-                padding: 18px;
-                margin: 20px 0;
-                min-height: 120px;
+        /* Responsive */
+        @media (max-height: 600px) {
+            .letter {
+                height: 85%;
+                width: 95%;
             }
-
-            .ad-between {
-                margin: 25px 0;
+            .letter-content {
+                padding: 20px;
             }
-
-            .top-banner {
-                font-size: 16px;
-                padding: 15px;
+            .letter-title {
+                font-size: 1.4em;
                 margin-bottom: 20px;
             }
-
-            /* Hacer los banners más visibles en móvil */
-            .ad-container {
-                background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
-                border: 2px solid #555;
-            }
-            
-            .nav-button {
-                padding: 12px 25px;
-                font-size: 16px;
-            }
-            
-            .navigation {
-                margin: 40px 0 25px 0;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-
-            .movie-image-container {
-                height: 250px;
-            }
-            
-            .movie-synopsis {
-                padding: 12px;
-                font-size: 13px;
-                max-height: 120px;
-            }
-            
-            .watch-button {
-                padding: 12px 18px;
-                font-size: 15px;
-            }
-
-            .top-banner {
-                font-size: 15px;
-                padding: 12px;
-            }
-
-            .ad-container {
-                margin: 18px 0;
-                padding: 15px;
-                min-height: 100px;
-            }
-
-            .movies-grid {
-                gap: 20px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-            
-            .nav-button {
-                padding: 10px 20px;
-                font-size: 15px;
-            }
-            
-            .page-indicator {
-                font-size: 14px;
+            .letter-message {
+                font-size: 1em;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Banner superior principal -->
-        <div class="top-banner">
-            🎬 PELÍCULAS GRATIS EN HD - PUBLICIDAD 🎬
+    <div class="game-container">
+        <!-- Header con contador -->
+        <div class="header">
+            <div class="title">🌹 Atrapa las Rosas </div>
+            <div class="counter">Rosas: <span id="counter">0</span> / 5</div>
         </div>
 
-        <!-- Indicador de página actual -->
-        <div class="page-indicator">
-            Estás viendo: <span class="current-page">Página 1</span>
+        <!-- Instrucciones -->
+        <div class="instructions">
+            Toca las rosas  que caen ✨
         </div>
 
-        <!-- Primer banner publicitario -->
-        <div class="ad-container ad-top">
-            <div class="ad-label">Publicidad Patrocinada</div>
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '9d6766e46c7b34676b45346acec44be2',
-                    'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/9d6766e46c7b34676b45346acec44be2/invoke.js"></script>
-        </div>
+        <!-- Nubes de fondo -->
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
 
-        <h1>🎬 Catálogo de Películas Premium</h1>
-        
-        <!-- SECCIÓN 1: Primeras 2 películas -->
-        <div class="content-section">
-            <div class="movies-grid">
-                <!-- PELÍCULA 1 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://m.media-amazon.com/images/I/41Tk9wptUwL._SY445_SX342_.jpg" 
-                             alt="Poster It Eso" 
-                             class="movie-image"
-                             style="display: none;">
+        <!-- Overlay de la carta -->
+        <div class="letter-overlay" id="letterOverlay">
+            <div class="letter">
+                <div class="letter-decoration">💖</div>
+                <div class="letter-content">
+                    <div class="letter-title">Para ti 💛</div>
+                    <div class="letter-message">
+                        Eres especial en mi vida; a pesar de los buenos o malos momentos, siempre serás lo mejor que me ha pasado.
                     </div>
-                    <h2 class="movie-title">It Eso</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2017</span>
-                        <span class="movie-genre">Terror</span>
+                    <div class="letter-signature">
+                        **Gracias por ser parte de mi vida.**
                     </div>
-                    <div class="movie-synopsis">
-                        En el verano de 1989, un grupo de niños maltratados se unieron para destruir a un monstruo cambia-formas, que se disfraza de payaso y se aprovecha de los niños de Derry, su pequeño pueblo de Maine.
-                    </div>
-                    <a href="https://pixeldrain.com/u/Q8KRdN3t" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
                 </div>
-
-                <!-- PELÍCULA 2 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2FfDqXzBcav7SmEZxFPACaFNsTbYV.jpg&w=640&q=75" 
-                             alt="Poster Amenaza a la Casa Blanca" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Amenaza a la Casa Blanca</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2023</span>
-                        <span class="movie-genre">Acción</span>
-                    </div>
-                    <div class="movie-synopsis">
-                        Después de que un terremoto sacuda D.C., el Army Corp corre contrarreloj para rescatar al presidente atrapado bajo los escombros mientras un siniestro complot tiene como objetivo capitalizar el desastre.
-                        <br><strong>Actores:</strong> Jack Pearson, Sean Young, Kayla Fields, Terry Woodberry, Eric Roberts
-                    </div>
-                    <a href="https://pixeldrain.com/u/9sUvssSH" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
+                <button class="play-again-btn" onclick="resetGame()">
+                    Jugar de nuevo 💫
+                </button>
             </div>
-        </div>
-
-        <!-- Banner publicitario entre películas -->
-        <div class="ad-container ad-between">
-            <div class="ad-label">Publicidad Patrocinada</div>
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : 'f982ee6ba95272eb27b7d10db16f8eea',
-                    'format' : 'iframe',
-                    'height' : 60,
-                    'width' : 468,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/f982ee6ba95272eb27b7d10db16f8eea/invoke.js"></script>
-        </div>
-
-        <!-- SECCIÓN 2: Siguientes 2 películas -->
-        <div class="content-section">
-            <div class="movies-grid">
-                <!-- PELÍCULA 3 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2Fh8DNi9XJKUS2nOzU5qEFEg7R0N6.jpg&w=640&q=75" 
-                             alt="Poster Rescate impactante" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Rescate impactante</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2024</span>
-                        <span class="movie-genre">Acción</span>
-                    </div>
-                    <div class="movie-synopsis">
-                       Un veterano experto en Muay Thai se embarca en una misión de venganza sin prisioneros luego de que su esposa y su hija son brutalmente asesinadas por fuerzas misteriosas.
-                      <br><strong>Actores:</strong> Tony Jaa, 洪浚嘉, 释行宇, 姜皓文, 陈朵怡
-                    </div>
-                    <a href="https://pixeldrain.com/u/9sUvssSH" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-
-                <!-- PELÍCULA 4 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2Fb0AQYSM09AYVRKLZr6jIAP2xNq9.jpg&w=640&q=75" 
-                             alt="Poster Del cielo al infierno" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Del cielo al infierno</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2025</span>
-                        <span class="movie-genre">Suspenso</span>
-                    </div>
-                    <div class="movie-synopsis">
-                      Cuando un poderoso productor musical es víctima de una extorsión, debe luchar por su familia y su legado mientras enfrenta un dilema moral de vida o muerte.
-                      <br><strong>Actores:</strong> Denzel Washington, Jeffrey Wright, Ilfenesh Hadera, Elijah Wright
-                    </div>
-                    <a href="https://pixeldrain.com/u/9fQd4ApV" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Native Ad grande en el medio -->
-        <div class="ad-container ad-middle">
-            <div class="ad-label">Contenido Patrocinado</div>
-            <script async="async" data-cfasync="false" src="//pl27617152.revenuecpmgate.com/557064b3e7068646f1d1e93ff3e1bd7d/invoke.js"></script>
-            <div id="container-557064b3e7068646f1d1e93ff3e1bd7d"></div>
-        </div>
-
-        <!-- SECCIÓN 3: Siguientes 2 películas -->
-        <div class="content-section">
-            <div class="movies-grid">
-                <!-- PELÍCULA 5 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2F7BSJhvwvrhifE8DyA5cuXgLRYLx.jpg&w=640&q=75" 
-                             alt="Poster Winnie Pooh: Miel y Sangre 2" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Winnie Pooh: Miel y Sangre 2</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2024</span>
-                        <span class="movie-genre">Terror</span>
-                    </div>
-                    <div class="movie-synopsis">
-                       Viviendo en la sombra, el grupo decide llevar la lucha al pueblo de Ashdown, hogar de Christopher Robin, dejando un sangriento rastro de muerte y caos a su paso.
-                       <br><strong>Actores:</strong> Scott Chambers, Tallulah Evans, Ryan Oliva, Lewis Santer
-                    </div>
-                    <a href="https://pixeldrain.com/u/Dutn5pEz" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-
-                <!-- PELÍCULA 6 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2F5Wb1sOZvFulzzJE5JDWCnFSCvJ5.jpg&w=640&q=75" 
-                             alt="Poster Riesgo bajo cero: Venganza" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Riesgo bajo cero: Venganza</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2024</span>
-                        <span class="movie-genre">Acción</span>
-                    </div>
-                    <div class="movie-synopsis">
-                       Mike viaja a Nepal para esparcir las cenizas de su hermano en el Everest. Cuando Mike y su guía se topan con mercenarios mientras viajan en un autobús se ven obligados a luchar para salvarse.
-                       <br><strong>Actores:</strong> Liam Neeson, 范冰冰, Marcus Thomas, Grace O'Sullivan
-                    </div>
-                    <a href="https://pixeldrain.com/u/KaFXupmE" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Banner publicitario entre películas -->
-        <div class="ad-container ad-between">
-            <div class="ad-label">Publicidad Patrocinada</div>
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '9d6766e46c7b34676b45346acec44be2',
-                    'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/9d6766e46c7b34676b45346acec44be2/invoke.js"></script>
-        </div>
-
-        <!-- SECCIÓN 4: Últimas 2 películas -->
-        <div class="content-section">
-            <div class="movies-grid">
-                <!-- PELÍCULA 7 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2Fk7jZM6Ti1AfoEzHoegRXjtWHyWy.jpg&w=640&q=75" 
-                             alt="Poster Superman" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Superman</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2025</span>
-                        <span class="movie-genre">Ciencia ficción</span>
-                    </div>
-                    <div class="movie-synopsis">
-                       Mientras el mundo pierde la fe en la bondad, Clark Kent, un periodista en Metrópolis, se embarca en un viaje para reconciliar su herencia kryptoniana con su educación humana como Superman.
-                       <br><strong>Actores:</strong> David Corenswet, Rachel Brosnahan, Nicholas Hoult, Edi Gathegi
-                    </div>
-                    <a href="https://pixeldrain.com/u/8K6zZdCg" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-
-                <!-- PELÍCULA 8 -->
-                <div class="movie-item">
-                    <div class="movie-image-container">
-                        <div class="loading-spinner"></div>
-                        <div class="image-placeholder">
-                            <div>🎬</div>
-                            <div style="font-size: 14px; margin-top: 10px;">Cargando imagen...</div>
-                        </div>
-                        <img data-src="https://www.cuevana.is/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2FkK0ZgJINxy50AkVbCsTRIX0DvbZ.jpg&w=640&q=75" 
-                             alt="Poster Get Fast" 
-                             class="movie-image"
-                             style="display: none;">
-                    </div>
-                    <h2 class="movie-title">Get Fast</h2>
-                    <div class="movie-info">
-                        <span class="movie-year">2024</span>
-                        <span class="movie-genre">Acción</span>
-                    </div>
-                    <div class="movie-synopsis">
-                        Cuando secuestran a su compañero después de un robo masivo, un famoso ladrón profesional sigue la pista de los secuestradores hasta el territorio de un despiadado capo de la droga.
-                        <br><strong>Género:</strong> Acción, Crimen, Suspenso
-                    </div>
-                    <a href="https://pixeldrain.com/u/mKJmmRBv" 
-                       class="watch-button" 
-                       target="_blank">
-                        <span class="play-icon">▶️</span>Ver Película
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Navegación a la siguiente página -->
-        <div class="navigation">
-            <a href="pagina2.html" class="nav-button">
-                <span class="nav-icon">🎬</span>Ver más películas
-            </a>
-        </div>
-        
-        <!-- Banner inferior grande -->
-        <div class="ad-container ad-bottom">
-            <div class="ad-label">Publicidad Patrocinada</div>
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : 'f982ee6ba95272eb27b7d10db16f8eea',
-                    'format' : 'iframe',
-                    'height' : 100,
-                    'width' : 728,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/f982ee6ba95272eb27b7d10db16f8eea/invoke.js"></script>
-        </div>
-
-        <!-- Banner final llamativo -->
-        <div class="top-banner">
-            🎬 DISFRUTA MÁS PELÍCULAS GRATIS - PUBLICIDAD 🎬
         </div>
     </div>
 
     <script>
-        function loadImage(img, placeholder, spinner) {
-            const src = img.getAttribute('data-src');
-            if (!src) return;
-            
-            const testImg = new Image();
-            
-            testImg.onload = function() {
-                img.src = src;
-                img.style.display = 'block';
-                if (placeholder) placeholder.classList.add('hidden');
-                if (spinner) spinner.style.display = 'none';
-            };
-            
-            testImg.onerror = function() {
-                if (spinner) spinner.style.display = 'none';
-                if (placeholder) {
-                    placeholder.innerHTML = `
-                        <div style="font-size: 24px;">🖼️</div>
-                        <div style="font-size: 12px; margin-top: 10px; text-align: center;">
-                            Error al cargar imagen<br>
-                            <span style="font-size: 10px; color: #888;">
-                                Formato no compatible o URL inválida
-                            </span>
-                        </div>
-                    `;
-                }
-            };
-            
-            testImg.src = src;
-        }
+        let rosesCollected = 0;
+        let gameActive = true;
+        let roseSpawnInterval;
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const movieItems = document.querySelectorAll('.movie-item');
+        const counter = document.getElementById('counter');
+        const letterOverlay = document.getElementById('letterOverlay');
+
+        // Sonidos usando Web Audio API
+        function playSound(frequency, duration) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                // Silenciar errores de audio
+            }
+        }
+
+        function createRose() {
+            if (!gameActive) return;
+
+            const rose = document.createElement('div');
+            rose.className = 'rose';
+            rose.innerHTML = '<span class="rose-emoji">🌹</span>';
             
-            movieItems.forEach(item => {
-                const img = item.querySelector('.movie-image');
-                const placeholder = item.querySelector('.image-placeholder');
-                const spinner = item.querySelector('.loading-spinner');
-                
-                if (img && img.getAttribute('data-src')) {
-                    loadImage(img, placeholder, spinner);
-                } else {
-                    if (spinner) spinner.style.display = 'none';
+            // Posición aleatoria en X
+            const maxX = window.innerWidth - 60;
+            const x = Math.random() * maxX;
+            rose.style.left = x + 'px';
+            
+            // Velocidad aleatoria de caída (3-7 segundos)
+            const fallDuration = 3 + Math.random() * 4;
+            rose.style.animationDuration = fallDuration + 's';
+            
+            document.querySelector('.game-container').appendChild(rose);
+
+            // Event listener para tocar la rosa
+            rose.addEventListener('click', function() {
+                collectRose(this, x + 30, rose.offsetTop + 30);
+            });
+
+            rose.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                collectRose(this, x + 30, rose.offsetTop + 30);
+            });
+
+            // Eliminar rosa después de la animación
+            setTimeout(() => {
+                if (rose.parentNode) {
+                    rose.parentNode.removeChild(rose);
+                }
+            }, fallDuration * 1000 + 100);
+        }
+
+        function collectRose(roseElement, x, y) {
+            if (!gameActive) return;
+
+            // Sonido de recolección
+            playSound(523 + rosesCollected * 100, 0.3);
+
+            // Efecto visual de recolección
+            const effect = document.createElement('div');
+            effect.className = 'collected-effect';
+            effect.textContent = '✨';
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            document.querySelector('.game-container').appendChild(effect);
+
+            // Eliminar efecto después de la animación
+            setTimeout(() => {
+                if (effect.parentNode) {
+                    effect.parentNode.removeChild(effect);
+                }
+            }, 1000);
+
+            // Eliminar rosa
+            if (roseElement.parentNode) {
+                roseElement.parentNode.removeChild(roseElement);
+            }
+
+            // Actualizar contador
+            rosesCollected++;
+            counter.textContent = rosesCollected;
+
+            // Verificar si se completó el juego
+            if (rosesCollected >= 5) {
+                completeGame();
+            }
+        }
+
+        function completeGame() {
+            gameActive = false;
+            clearInterval(roseSpawnInterval);
+
+            // Limpiar rosas restantes
+            document.querySelectorAll('.rose').forEach(rose => {
+                if (rose.parentNode) {
+                    rose.parentNode.removeChild(rose);
                 }
             });
-        });
+
+            // Sonido de victoria
+            setTimeout(() => playSound(523, 0.4), 100);
+            setTimeout(() => playSound(659, 0.4), 300);
+            setTimeout(() => playSound(784, 0.6), 500);
+
+            // Mostrar carta después de un breve delay
+            setTimeout(() => {
+                letterOverlay.style.display = 'flex';
+            }, 1000);
+        }
+
+        function resetGame() {
+            // Resetear variables
+            rosesCollected = 0;
+            gameActive = true;
+            counter.textContent = '0';
+            
+            // Ocultar carta
+            letterOverlay.style.display = 'none';
+            
+            // Limpiar rosas existentes
+            document.querySelectorAll('.rose').forEach(rose => {
+                if (rose.parentNode) {
+                    rose.parentNode.removeChild(rose);
+                }
+            });
+
+            // Reiniciar spawn de rosas
+            startGame();
+        }
+
+        function startGame() {
+            // Crear rosas cada 1.5-3 segundos
+            roseSpawnInterval = setInterval(() => {
+                createRose();
+            }, 1500 + Math.random() * 1500);
+
+            // Crear primera rosa inmediatamente
+            createRose();
+        }
+
+        // Prevenir zoom en dispositivos móviles
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Iniciar el juego
+        startGame();
     </script>
 </body>
 </html>
